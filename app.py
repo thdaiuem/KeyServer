@@ -7,21 +7,16 @@ import uuid
 
 app = Flask(__name__)
 
-# --- CẤU HÌNH DATABASE (ĐÃ CẬP NHẬT ĐỂ SỬA LỖI URI) ---
+# --- CẤU HÌNH DATABASE ---
 database_url = os.environ.get('DATABASE_URL')
-
-# Kiểm tra xem biến môi trường DATABASE_URL có được thiết lập không
 if not database_url:
-    raise RuntimeError("FATAL ERROR: DATABASE_URL environment variable is not set. Please set it in your Render service's environment settings.")
-
-# Sửa lỗi: SQLAlchemy v1.4+ yêu cầu URL bắt đầu bằng "postgresql://"
-# Mã này sẽ đảm bảo URL luôn đúng, dù Render cung cấp "postgres://"
+    raise RuntimeError("FATAL ERROR: DATABASE_URL environment variable is not set.")
 if database_url.startswith("postgres://"):
     database_url = database_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-secret-key-change-me')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-that-you-should-change')
 
 db = SQLAlchemy(app)
 
